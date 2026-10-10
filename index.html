@@ -41,7 +41,7 @@
     .timer-box { color: #ef4444; font-weight: bold; border-color: #ef4444; }
     .timer-box strong { color: #ef4444; }
 
-    /* 3ኛ. Refresh አዝራር ከዋናው Top Bar ከ Play Wallet ጎን */
+    /* Top Bar Refresh Button */
     .top-refresh-btn {
       background: #334155;
       color: #38bdf8;
@@ -58,7 +58,7 @@
     .view { display: none; padding: 12px; }
     .view.active { display: block !important; }
 
-    /* SCREEN 1: WELCOME SCREEN */
+    /* SCREEN 1: WELCOME */
     .welcome-container { 
       display: flex; 
       flex-direction: column; 
@@ -86,15 +86,14 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       display: block;
       outline: none;
-      -webkit-tap-highlight-color: transparent;
     }
     .stake-btn:active { background: #eab308; color: #000; transform: scale(0.98); }
 
-    /* SCREEN 2: CARTELA SELECTION SCREEN */
+    /* SCREEN 2: CARTELA SELECTION */
     .section-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .badge { background: #eab308; color: #000; font-weight: bold; font-size: 11px; padding: 2px 7px; border-radius: 12px; }
 
-    /* 1 - 600 ሳጥን (በ 8 አምዶች የተደረደሩ አነስተኛ አዝራሮች) */
+    /* 1 - 600 Buttons */
     .cartela-grid { 
       display: grid; 
       grid-template-columns: repeat(8, 1fr); 
@@ -117,7 +116,6 @@
       font-size: 10px; 
       cursor: pointer; 
       text-align: center;
-      outline: none;
     }
     .cartela-btn:active { transform: scale(0.95); }
     .cartela-btn.selected { 
@@ -126,7 +124,7 @@
       color: #ffffff !important; 
       box-shadow: 0 0 6px rgba(16, 185, 129, 0.6); 
     }
-	/* 5x5 ካርቴላ መጠኑ ቀነስ ያለ */
+	/* 5x5 Matrix Card */
     .bingo-card-wrapper { 
       background: #1e293b; 
       border-radius: 8px; 
@@ -153,9 +151,8 @@
       border-radius: 3px;
       color: #fff;
     }
-    /* የአምድ ቀለማት */
     .col-header-B { background: #f97316; } /* Orange */
-    .col-header-I { background: #0284c7; } /* Blur / Sky Blue */
+    .col-header-I { background: #0284c7; } /* Sky Blue */
     .col-header-N { background: #eab308; color: #000; } /* Yellow */
     .col-header-G { background: #22c55e; } /* Green */
     .col-header-O { background: #ef4444; } /* Red */
@@ -173,14 +170,14 @@
     }
     .cell.free { background: #eab308; color: #000; font-weight: 900; font-size: 9px; line-height: 15px; }
 
-    /* የወጡ ቁጥሮች በካርቴላው ላይ በደማቅ ቀለማቸው */
+    /* በካርቴላዎች ላይ የሚደምቁ ቀለማት */
     .cell.marked-B { background: #f97316 !important; color: #ffffff !important; box-shadow: 0 0 6px #f97316; }
     .cell.marked-I { background: #38bdf8 !important; color: #000000 !important; box-shadow: 0 0 6px #38bdf8; }
     .cell.marked-N { background: #facc15 !important; color: #000000 !important; box-shadow: 0 0 6px #facc15; }
     .cell.marked-G { background: #22c55e !important; color: #ffffff !important; box-shadow: 0 0 6px #22c55e; }
     .cell.marked-O { background: #ef4444 !important; color: #ffffff !important; box-shadow: 0 0 6px #ef4444; }
 
-    /* SCREEN 3: GAMEPLAY SCREEN */
+    /* SCREEN 3: GAMEPLAY */
     .game-caller-bar { 
       display: flex; 
       justify-content: space-between; 
@@ -203,7 +200,7 @@
     .num-pill.called-G { background: #22c55e; color: #fff; font-weight: bold; }
     .num-pill.called-O { background: #ef4444; color: #fff; font-weight: bold; }
 
-    /* አሸናፊ Popup Modal */
+    /* Victory Popup Modal */
     .winner-modal { 
       position: fixed; 
       inset: 0; 
@@ -332,7 +329,6 @@
   </nav>
 
   <script>
-    // ቴሌግራም ተጠቃሚን መለየት
     var tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     var telegramUsername = "@ተጫዋች";
     if (tg) {
@@ -359,7 +355,6 @@
     var mainBalance = 0.0;
     var playBalance = 10.0;
 
-    // አዝራሮቹ በ Event Listener እና በ Onclick ሁለቱም እንዲሰሩ
     document.addEventListener("DOMContentLoaded", function() {
       var btn10 = document.getElementById('play-btn-10');
       var btn20 = document.getElementById('play-btn-20');
@@ -386,13 +381,7 @@
       document.getElementById('welcome-view').classList.remove('active');
       document.getElementById('lobby-view').classList.add('active');
 
-      selectedCartelas = [];
-      generatedCards = {};
-      document.querySelectorAll('.cartela-btn').forEach(function(b) { b.classList.remove('selected'); });
-      var cntEl = document.getElementById('selected-count');
-      if (cntEl) cntEl.innerText = 0;
-      var cardsCont = document.getElementById('active-cards-container');
-      if (cardsCont) cardsCont.innerHTML = '';
+      clearSelection();
       calcDerash();
     }
 
@@ -407,7 +396,8 @@
         document.getElementById(viewId).classList.add('active');
       }
     }
-	function calcDerash() {
+
+    function calcDerash() {
       var mult = (currentStake === 10) ? 8 : 16;
       var dEl = document.getElementById('top-derash');
       var pEl = document.getElementById('top-players');
@@ -415,11 +405,10 @@
       if (pEl) pEl.innerText = selectedCartelas.length;
     }
 
-    // 1 - 600 ሳጥን መገንቢያ
     function initCartelaGrid() {
       var cBox = document.getElementById('cartela-container');
       if (!cBox) return;
-      cBox.innerHTML = '';
+	  cBox.innerHTML = '';
       for (var i = 1; i <= 600; i++) {
         (function(n) {
           var b = document.createElement('button');
@@ -433,7 +422,6 @@
       }
     }
 
-    // ካርቴላ መምረጥ (Auto-replace)
     function pickCartela(id, btn) {
       if (isPlaying) return;
       var idx = selectedCartelas.indexOf(id);
@@ -459,7 +447,6 @@
       renderCards();
     }
 
-    // Refresh አዝራር
     function executeRefresh() {
       if (isPlaying) return;
       if (selectedCartelas.length === 0) {
@@ -523,7 +510,7 @@
       h += '</div></div>';
       return h;
     }
-	// 1-75 Master Board
+
     function initMasterBoard() {
       var ranges = { B:[1,15], I:[16,30], N:[31,45], G:[46,60], O:[61,75] };
       for (var k in ranges) {
@@ -539,8 +526,24 @@
         }
       }
     }
+	// 4ኛ. ለሁሉም ተጫዋች አንድ አይነት ቁጥሮች እንዲጠሩ የሚያደርግ ሎጂክ (Pseudo-random Seed generator)
+    function generateGlobalDeck(roundId) {
+      var arr = [];
+      for (var i = 1; i <= 75; i++) arr.push(i);
+      var seed = roundId * 1234567;
+      var rnd = function() {
+        seed = (seed * 9301 + 49297) % 233280;
+        return seed / 233280;
+      };
+      for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(rnd() * (i + 1));
+        var temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+      }
+      return arr;
+    }
 
-    // 50 ሰከንድ ቆጣሪ
     function initGlobalTimer() {
       setInterval(function() {
         var now = Math.floor(Date.now() / 1000);
@@ -559,8 +562,11 @@
 
     function startGame() {
       isPlaying = true;
+      var roundId = Math.floor(Date.now() / (CYCLE * 1000));
+
       document.getElementById('lobby-stats').style.display = 'none';
       document.getElementById('gameplay-stats').style.display = 'flex';
+      document.getElementById('top-game-id').innerText = '#' + String(roundId % 10000).padStart(4, '0');
       document.getElementById('lobby-view').classList.remove('active');
       document.getElementById('game-view').classList.add('active');
 
@@ -568,9 +574,9 @@
 
       calledBalls = [];
       calledSet.clear();
-      var deck = [];
-      for (var i = 1; i <= 75; i++) deck.push(i);
-      deck.sort(function() { return 0.5 - Math.random(); });
+      
+      // 4ኛ. ለሁሉም ተጫዋች አንድ አይነት ቁጥሮች
+      var deck = generateGlobalDeck(roundId);
 
       gameInterval = setInterval(function() {
         if (deck.length === 0 || calledBalls.length >= 75) {
@@ -589,6 +595,7 @@
         var pill = document.getElementById('pill-' + ball);
         if (pill) pill.className = 'num-pill called-' + letter;
 
+        // 3ኛ. እያንዳንዱ የተመረጡት ካርቴላዎች ላይ በየቀለማቸው ደምቀው መታየት
         selectedCartelas.forEach(function(cid) {
           var cell = document.getElementById('card-' + cid + '-' + ball);
           if (cell) cell.classList.add('marked-' + letter);
@@ -618,41 +625,47 @@
         var isWon = false;
         var pattern = "";
 
-        // 1. Horizontal
         for (var r = 0; r < 5; r++) {
           if (grid[r].every(Boolean)) { isWon = true; pattern = "በረድፍ " + (r + 1); break; }
         }
-        // 2. Vertical
         if (!isWon) {
           for (var c = 0; c < 5; c++) {
             if (grid.map(function(row) { return row[c]; }).every(Boolean)) { isWon = true; pattern = "በአምድ " + cols[c]; break; }
           }
         }
-        // 3. Diagonal TL-BR
         if (!isWon && [0,1,2,3,4].every(function(i) { return grid[i][i]; })) {
           isWon = true; pattern = "በሰያፍ መስመር";
         }
-        // 4. Diagonal TR-BL
         if (!isWon && [0,1,2,3,4].every(function(i) { return grid[i][4-i]; })) {
           isWon = true; pattern = "በሰያፍ መስመር";
         }
-
-        if (isWon) {
+		if (isWon) {
           roundWinners.push({ id: cid, pattern: pattern, matrix: mat });
         }
       }
-	  if (roundWinners.length > 0) {
+
+      if (roundWinners.length > 0) {
         handleWinnersVictory(roundWinners);
       }
     }
 
+    // 2ኛ. ሙሉ ደራሽ ወይም የተከፋፈለ ደራሽ ወደ Main Wallet መጨመር
     function handleWinnersVictory(winners) {
       clearInterval(gameInterval);
 
       var totalDerash = parseFloat(document.getElementById('top-derash').innerText) || 0;
-      var prizePerWinner = totalDerash > 0 ? (totalDerash / winners.length).toFixed(2) : 0;
+      var prizePerWinner = 0;
 
-      mainBalance += parseFloat(prizePerWinner);
+      if (winners.length === 1) {
+        // 1 አሸናፊ ከሆነ ሙሉው ደራሽ
+        prizePerWinner = totalDerash;
+      } else if (winners.length > 1) {
+        // 2 እና ከዚያ በላይ ከሆኑ ለብዛታቸው ይካፈላል
+        prizePerWinner = totalDerash / winners.length;
+      }
+
+      // በራስ-ሰር ወደ Main Wallet መጨመር
+      mainBalance += prizePerWinner;
       document.getElementById('top-main-wallet').innerText = mainBalance.toFixed(2);
       document.getElementById('wallet-main-display').innerText = mainBalance.toFixed(2);
 
@@ -669,7 +682,7 @@
           '<h2 style="color: #eab308; margin-bottom: 6px; font-size: 20px;">🎉 ቢንጎ! እንኳን ደስ አለህ!</h2>' +
           '<p style="font-size: 14px; margin-bottom: 4px; color: #fff;">አሸናፊ፡ <b style="color: #38bdf8;">' + winnerNames + '</b></p>' +
           '<p style="color: #94a3b8; font-size: 13px;">ያሸነፈበት ካርቴላ፡ <b style="color: #10b981;">' + winnerCardIds + '</b></p>' +
-          '<p style="color: #facc15; font-size: 13px; font-weight: bold; margin-top: 4px;">ሽልማት፡ ' + prizePerWinner + ' ብር ገቢ ተደርጓል!</p>' +
+          '<p style="color: #facc15; font-size: 13px; font-weight: bold; margin-top: 4px;">ሽልማት፡ ' + prizePerWinner.toFixed(2) + ' ብር ገቢ ተደርጓል!</p>' +
           '<div style="max-height: 240px; overflow-y: auto; margin-top: 8px;">' +
             winningCardsHTML +
           '</div>' +
@@ -691,6 +704,18 @@
       setTimeout(resetToLobby, 2000);
     }
 
+    function clearSelection() {
+      selectedCartelas = [];
+      generatedCards = {};
+      document.querySelectorAll('.cartela-btn').forEach(function(b) { b.classList.remove('selected'); });
+      var cntEl = document.getElementById('selected-count');
+      if (cntEl) cntEl.innerText = 0;
+      var cardsCont = document.getElementById('active-cards-container');
+      if (cardsCont) cardsCont.innerHTML = '';
+      calcDerash();
+    }
+
+    // 1ኛ. ጨዋታው ሲያልቅ የድሮውን ካርቴላ ትተው እንደ አዲስ እንዲመርጡ ሙሉ በሙሉ ማጽዳት
     function resetToLobby() {
       isPlaying = false;
       calledBalls = [];
@@ -707,8 +732,8 @@
       document.getElementById('current-call').innerText = '--';
       document.getElementById('top-called').innerText = '0';
 
-      executeRefresh();
-      calcDerash();
+      // የድሮውን ካርቴላ ያጸዳል፤ ተጫዋቾች እንደ አዲስ የፈለጉትን እንዲመርጡ ያደርጋል
+      clearSelection();
     }
   </script>
 </body>
