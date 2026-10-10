@@ -41,7 +41,7 @@
     .timer-box { color: #ef4444; font-weight: bold; border-color: #ef4444; }
     .timer-box strong { color: #ef4444; }
 
-    /* Top Bar Refresh Button */
+    /* 5ኛ. Refresh ቁልፍ ካርቴላዎችን Deselect ያደርጋል */
     .top-refresh-btn {
       background: #334155;
       color: #38bdf8;
@@ -58,7 +58,7 @@
     .view { display: none; padding: 12px; }
     .view.active { display: block !important; }
 
-    /* SCREEN 1: WELCOME */
+    /* SCREEN 1: WELCOME SCREEN */
     .welcome-container { 
       display: flex; 
       flex-direction: column; 
@@ -89,11 +89,11 @@
     }
     .stake-btn:active { background: #eab308; color: #000; transform: scale(0.98); }
 
-    /* SCREEN 2: CARTELA SELECTION */
+    /* SCREEN 2: CARTELA SELECTION SCREEN */
     .section-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .badge { background: #eab308; color: #000; font-weight: bold; font-size: 11px; padding: 2px 7px; border-radius: 12px; }
 
-    /* 1 - 600 Buttons */
+    /* 1 - 600 ሳጥን */
     .cartela-grid { 
       display: grid; 
       grid-template-columns: repeat(8, 1fr); 
@@ -116,6 +116,7 @@
       font-size: 10px; 
       cursor: pointer; 
       text-align: center;
+      outline: none;
     }
     .cartela-btn:active { transform: scale(0.95); }
     .cartela-btn.selected { 
@@ -166,16 +167,16 @@
       font-weight: bold; 
       font-size: 11px; 
       border: 1px solid #334155; 
-      transition: all 0.2s ease;
+      transition: all 0.25s ease-in-out;
     }
     .cell.free { background: #eab308; color: #000; font-weight: 900; font-size: 9px; line-height: 15px; }
 
-    /* በካርቴላዎች ላይ የሚደምቁ ቀለማት */
-    .cell.marked-B { background: #f97316 !important; color: #ffffff !important; box-shadow: 0 0 6px #f97316; }
-    .cell.marked-I { background: #38bdf8 !important; color: #000000 !important; box-shadow: 0 0 6px #38bdf8; }
-    .cell.marked-N { background: #facc15 !important; color: #000000 !important; box-shadow: 0 0 6px #facc15; }
-    .cell.marked-G { background: #22c55e !important; color: #ffffff !important; box-shadow: 0 0 6px #22c55e; }
-    .cell.marked-O { background: #ef4444 !important; color: #ffffff !important; box-shadow: 0 0 6px #ef4444; }
+    /* 3ኛ. ቁጥሮቹ ሲወጡ ወዲያውኑ በደማቅ ቀለም የሚያበሩበት ሁኔታ */
+    .cell.marked-B { background: #f97316 !important; color: #ffffff !important; box-shadow: 0 0 8px #f97316; transform: scale(1.05); }
+    .cell.marked-I { background: #38bdf8 !important; color: #000000 !important; box-shadow: 0 0 8px #38bdf8; transform: scale(1.05); }
+    .cell.marked-N { background: #facc15 !important; color: #000000 !important; box-shadow: 0 0 8px #facc15; transform: scale(1.05); }
+    .cell.marked-G { background: #22c55e !important; color: #ffffff !important; box-shadow: 0 0 8px #22c55e; transform: scale(1.05); }
+    .cell.marked-O { background: #ef4444 !important; color: #ffffff !important; box-shadow: 0 0 8px #ef4444; transform: scale(1.05); }
 
     /* SCREEN 3: GAMEPLAY */
     .game-caller-bar { 
@@ -221,9 +222,8 @@
       max-width: 320px; 
       box-shadow: 0 0 25px rgba(234, 179, 8, 0.4);
     }
-
-    .card { background: #1e293b; padding: 14px; border-radius: 8px; margin-bottom: 12px; line-height: 1.8; border: 1px solid #334155; font-size: 13px; }
-	.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; display: none; background: #0f172a; border-top: 2px solid #334155; height: 55px; z-index: 9999; }
+	.card { background: #1e293b; padding: 14px; border-radius: 8px; margin-bottom: 12px; line-height: 1.8; border: 1px solid #334155; font-size: 13px; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; display: none; background: #0f172a; border-top: 2px solid #334155; height: 55px; z-index: 9999; }
     .nav-item { flex: 1; background: transparent; border: none; color: #94a3b8; font-size: 12px; font-weight: bold; cursor: pointer; }
     .nav-item.active { color: #eab308; }
   </style>
@@ -235,7 +235,8 @@
     <div id="lobby-stats" class="stat-row">
       <div class="stat-box">ዋና: <strong id="top-main-wallet">0.00</strong> ብር</div>
       <div class="stat-box">መጫወቻ: <strong id="top-play-wallet">10.00</strong> ብር</div>
-      <button type="button" class="top-refresh-btn" onclick="executeRefresh()">🔄 Refresh</button>
+      <!-- 5ኛ. Refresh አዝራር ካርቴላዎችን Deselect ያደርጋል -->
+      <button type="button" class="top-refresh-btn" onclick="executeRefreshDeselect()">🔄 Refresh</button>
       <div class="stat-box timer-box">⏱ <strong id="countdown">49</strong>s</div>
     </div>
     <div id="gameplay-stats" class="stat-row" style="display: none;">
@@ -301,11 +302,12 @@
     <div class="card">
       <p>💰 ዋና ሂሳብ (Main Wallet): <strong id="wallet-main-display">0.00</strong> ብር</p>
       <p>🎮 መጫወቻ ሂሳብ (Play Wallet): <strong id="wallet-play-display">10.00</strong> ብር</p>
-      <hr style="border: 0; border-top: 1px solid #334155; margin: 10px 0;">
+	  <hr style="border: 0; border-top: 1px solid #334155; margin: 10px 0;">
       <p style="color: #38bdf8;">💳 ገንዘብ ለመሙላት በቴሌግራም ቦቱ ላይ <b>Deposit</b> የሚለውን ይጠቀሙ።</p>
       <p style="color: #10b981; margin-top: 4px;">💸 ገንዘብ ለማውጣት በቴሌግራም ቦቱ ላይ <b>Withdraw</b> የሚለውን ይጠቀሙ።</p>
     </div>
   </section>
+
   <!-- History & Profile -->
   <section id="history-view" class="view">
     <h3 style="margin-bottom: 10px;">የጨዋታ ታሪክ</h3>
@@ -356,6 +358,9 @@
     var playBalance = 10.0;
 
     document.addEventListener("DOMContentLoaded", function() {
+      // 5ኛ. ገጹ ሲከፈት ወይም Refresh ሲደረግ ምርጫዎችን Deselect ማድረግ
+      clearSelection();
+
       var btn10 = document.getElementById('play-btn-10');
       var btn20 = document.getElementById('play-btn-20');
       if (btn10) btn10.addEventListener('click', function() { goToLobby(10, 1); });
@@ -404,11 +409,10 @@
       if (dEl) dEl.innerText = selectedCartelas.length * mult;
       if (pEl) pEl.innerText = selectedCartelas.length;
     }
-
-    function initCartelaGrid() {
+	function initCartelaGrid() {
       var cBox = document.getElementById('cartela-container');
       if (!cBox) return;
-	  cBox.innerHTML = '';
+      cBox.innerHTML = '';
       for (var i = 1; i <= 600; i++) {
         (function(n) {
           var b = document.createElement('button');
@@ -447,17 +451,10 @@
       renderCards();
     }
 
-    function executeRefresh() {
+    // 5ኛ. Top Bar ላይ Refresh ሲነካ የተመረጡትን ካርቴላዎች Deselect ማድረግ
+    function executeRefreshDeselect() {
       if (isPlaying) return;
-      if (selectedCartelas.length === 0) {
-        alert("እባክዎ መጀመሪያ ካርቴላ ይምረጡ!");
-        return;
-      }
-      for (var i = 0; i < selectedCartelas.length; i++) {
-        var cid = selectedCartelas[i];
-        generatedCards[cid] = makeMatrix();
-      }
-      renderCards();
+      clearSelection();
     }
 
     function makeMatrix() {
@@ -526,7 +523,7 @@
         }
       }
     }
-	// 4ኛ. ለሁሉም ተጫዋች አንድ አይነት ቁጥሮች እንዲጠሩ የሚያደርግ ሎጂክ (Pseudo-random Seed generator)
+	// 4ኛ. ለሁሉም ተጫዋች አንድ ዓይነት ቁጥሮች እንዲጠሩ የሚያደርግ ማዕከላዊ ማመንጫ
     function generateGlobalDeck(roundId) {
       var arr = [];
       for (var i = 1; i <= 75; i++) arr.push(i);
@@ -575,7 +572,7 @@
       calledBalls = [];
       calledSet.clear();
       
-      // 4ኛ. ለሁሉም ተጫዋች አንድ አይነት ቁጥሮች
+      // 4ኛ. ለሁሉም ተጫዋች ተመሳሳይ የቁጥር ቅደም ተከተል
       var deck = generateGlobalDeck(roundId);
 
       gameInterval = setInterval(function() {
@@ -595,7 +592,7 @@
         var pill = document.getElementById('pill-' + ball);
         if (pill) pill.className = 'num-pill called-' + letter;
 
-        // 3ኛ. እያንዳንዱ የተመረጡት ካርቴላዎች ላይ በየቀለማቸው ደምቀው መታየት
+        // 3ኛ. ወዲያውኑ ልክ ሲጠሩ በየቀለማቸው በካርቴላዎች ላይ ደምቀው መታየት
         selectedCartelas.forEach(function(cid) {
           var cell = document.getElementById('card-' + cid + '-' + ball);
           if (cell) cell.classList.add('marked-' + letter);
@@ -657,14 +654,12 @@
       var prizePerWinner = 0;
 
       if (winners.length === 1) {
-        // 1 አሸናፊ ከሆነ ሙሉው ደራሽ
         prizePerWinner = totalDerash;
       } else if (winners.length > 1) {
-        // 2 እና ከዚያ በላይ ከሆኑ ለብዛታቸው ይካፈላል
         prizePerWinner = totalDerash / winners.length;
       }
 
-      // በራስ-ሰር ወደ Main Wallet መጨመር
+      // 2ኛ. አሸናፊዎች Main Wallet ላይ በራስ-ሰር ገቢ ይደረጋል
       mainBalance += prizePerWinner;
       document.getElementById('top-main-wallet').innerText = mainBalance.toFixed(2);
       document.getElementById('wallet-main-display').innerText = mainBalance.toFixed(2);
@@ -704,6 +699,7 @@
       setTimeout(resetToLobby, 2000);
     }
 
+    // 5ኛ. ካርቴላዎችን በሙሉ Deselect የማድረጊያ ፈንክሽን
     function clearSelection() {
       selectedCartelas = [];
       generatedCards = {};
@@ -715,7 +711,7 @@
       calcDerash();
     }
 
-    // 1ኛ. ጨዋታው ሲያልቅ የድሮውን ካርቴላ ትተው እንደ አዲስ እንዲመርጡ ሙሉ በሙሉ ማጽዳት
+    // 1ኛ. ጨዋታው ሲያልቅ ካርቴላዎችን ሙሉ ለሙሉ አጽድቶ አዲስ ምርጫ ክፍት ማድረግ
     function resetToLobby() {
       isPlaying = false;
       calledBalls = [];
@@ -732,7 +728,6 @@
       document.getElementById('current-call').innerText = '--';
       document.getElementById('top-called').innerText = '0';
 
-      // የድሮውን ካርቴላ ያጸዳል፤ ተጫዋቾች እንደ አዲስ የፈለጉትን እንዲመርጡ ያደርጋል
       clearSelection();
     }
   </script>
