@@ -41,7 +41,6 @@
     .timer-box { color: #ef4444; font-weight: bold; border-color: #ef4444; }
     .timer-box strong { color: #ef4444; }
 
-    /* 4ኛ ነጥብ፡ ሙሉውን ገጽ (Wallet & History) የሚያድስ Refresh ቁልፍ */
     .top-refresh-btn {
       background: #334155;
       color: #38bdf8;
@@ -93,38 +92,44 @@
     .section-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .badge { background: #eab308; color: #000; font-weight: bold; font-size: 11px; padding: 2px 7px; border-radius: 12px; }
 
+    /* 3ኛ ነጥብ፡ የ 1-600 ሳጥን እረዘም ተደርጓል (max-height: 380px) */
     .cartela-grid { 
       display: grid; 
       grid-template-columns: repeat(8, 1fr); 
-      gap: 4px; 
-      max-height: 250px; 
+      gap: 3px; 
+      max-height: 380px; 
       overflow-y: auto; 
       background: #1e293b; 
       padding: 8px; 
       border-radius: 8px; 
       border: 1px solid #334155; 
-      margin-bottom: 10px; 
+      margin-bottom: 12px; 
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
     }
+    
+    /* 3ኛ ነጥብ፡ የ 1-600 ቁጥሮች መጠናቸው አነስ እንዲል ተደርጓል */
     .cartela-btn { 
-      background: #334155; 
+      background: #253349; 
       color: #cbd5e1; 
-      border: 1px solid #475569; 
-      padding: 6px 0; 
-      border-radius: 4px; 
+      border: 1px solid #3b4d66; 
+      padding: 4px 0; 
+      border-radius: 3px; 
       font-weight: bold; 
-      font-size: 10px; 
+      font-size: 9px; 
       cursor: pointer; 
       text-align: center;
       outline: none;
+      line-height: 12px;
     }
-    .cartela-btn:active { transform: scale(0.95); }
+    .cartela-btn:active { transform: scale(0.92); }
     .cartela-btn.selected { 
       background: #10b981 !important; 
       border-color: #34d399 !important; 
       color: #ffffff !important; 
-      box-shadow: 0 0 6px rgba(16, 185, 129, 0.6); 
+      box-shadow: 0 0 6px rgba(16, 185, 129, 0.7); 
     }
-	.bingo-card-wrapper { 
+	/* 5x5 Matrix Card */
+    .bingo-card-wrapper { 
       background: #1e293b; 
       border-radius: 8px; 
       padding: 8px; 
@@ -169,7 +174,6 @@
     }
     .cell.free { background: #eab308; color: #000; font-weight: 900; font-size: 9px; line-height: 15px; }
 
-    /* ቀለማት */
     .cell.marked-B { background: #f97316 !important; color: #ffffff !important; box-shadow: 0 0 8px #f97316; transform: scale(1.05); }
     .cell.marked-I { background: #38bdf8 !important; color: #000000 !important; box-shadow: 0 0 8px #38bdf8; transform: scale(1.05); }
     .cell.marked-N { background: #facc15 !important; color: #000000 !important; box-shadow: 0 0 8px #facc15; transform: scale(1.05); }
@@ -221,19 +225,38 @@
     }
 
     .card { background: #1e293b; padding: 14px; border-radius: 8px; margin-bottom: 12px; line-height: 1.8; border: 1px solid #334155; font-size: 13px; }
-	.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; display: none; background: #0f172a; border-top: 2px solid #334155; height: 55px; z-index: 9999; }
+	/* 2ኛ ነጥብ፡ በዋሌት ውስጥ ያለ የ Refresh አዝራር ስታይል */
+    .wallet-refresh-action {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);
+    }
+    .wallet-refresh-action:active { transform: scale(0.97); background: #0369a1; }
+
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; display: none; background: #0f172a; border-top: 2px solid #334155; height: 55px; z-index: 9999; }
     .nav-item { flex: 1; background: transparent; border: none; color: #94a3b8; font-size: 12px; font-weight: bold; cursor: pointer; }
     .nav-item.active { color: #eab308; }
   </style>
 </head>
 <body>
 
-  <!-- Top Stats Bar (3ኛ ነጥብ፡ ተመሳሳይ Wallet ID) -->
+  <!-- 1ኛ ነጥብ፡ Top Stats Bar (Sync) -->
   <header class="top-bar" id="app-top-bar">
     <div id="lobby-stats" class="stat-row">
       <div class="stat-box">ዋና: <strong id="top-main-wallet">0.00</strong> ብር</div>
       <div class="stat-box">መጫወቻ: <strong id="top-play-wallet">10.00</strong> ብር</div>
-      <!-- 4ኛ ነጥብ፡ ሙሉውን የሚያድስ Refresh ቁልፍ -->
       <button type="button" class="top-refresh-btn" onclick="executeFullRefresh()">🔄 Refresh</button>
       <div class="stat-box timer-box">⏱ <strong id="countdown">49</strong>s</div>
     </div>
@@ -265,10 +288,11 @@
   <!-- SCREEN 2: CARTELA SELECTION SCREEN -->
   <main id="lobby-view" class="view">
     <div class="section-title">
-      <h3 style="color: #f8fafc; font-size: 14px;">ካርቴላ ይምረጡ</h3>
+      <h3 style="color: #f8fafc; font-size: 14px;">ካርቴላ ይምረጡ (1 - 600)</h3>
       <span class="badge"><span id="selected-count">0</span>/<span id="max-count">1</span></span>
     </div>
 
+    <!-- 3ኛ ነጥብ፡ እረዘም ያለ የ 1-600 ሳጥን -->
     <div class="cartela-grid" id="cartela-container"></div>
     <div id="active-cards-container"></div>
   </main>
@@ -293,19 +317,25 @@
 
     <div id="in-game-cards"></div>
   </main>
-
-  <!-- 3ኛ ነጥብ፡ WALLET VIEW (ከ Top Bar ጋር ፍፁም የተገናኘ) -->
+  <!-- 1ኛ & 2ኛ ነጥብ፡ WALLET VIEW (Refresh Button ተጨምሯል) -->
   <section id="wallet-view" class="view">
     <h3 style="margin-bottom: 10px; color: #eab308;">የሂሳብ ቋት (Wallet)</h3>
     <div class="card">
       <p>💰 ዋና ሂሳብ (Main Wallet): <strong id="wallet-main-display" style="color: #38bdf8;">0.00</strong> ብር</p>
       <p>🎮 መጫወቻ ሂሳብ (Play Wallet): <strong id="wallet-play-display" style="color: #10b981;">10.00</strong> ብር</p>
-      <hr style="border: 0; border-top: 1px solid #334155; margin: 10px 0;">
+      
+      <!-- 2ኛ ነጥብ፡ በዋሌት ውስጥ ያለ Refresh Button -->
+      <button type="button" class="wallet-refresh-action" onclick="fetchLiveWalletBalance()">
+        🔄 ሂሳብ አድስ (Refresh Balance)
+      </button>
+
+      <hr style="border: 0; border-top: 1px solid #334155; margin: 12px 0;">
       <p style="color: #38bdf8;">💳 ገንዘብ ለመሙላት በቴሌግራም ቦቱ ላይ <b>Deposits</b> የሚለውን ይጠቀሙ።</p>
       <p style="color: #10b981; margin-top: 4px;">💸 ገንዘብ ለማውጣት በቴሌግራም ቦቱ ላይ <b>Withdrawal</b> የሚለውን ይጠቀሙ።</p>
     </div>
   </section>
-  <!-- 4ኛ ነጥብ፡ HISTORY VIEW (በ Refresh የሚታደስ) -->
+
+  <!-- HISTORY VIEW -->
   <section id="history-view" class="view">
     <h3 style="margin-bottom: 10px;">የጨዋታ ታሪክ</h3>
     <div class="card" id="history-content">
@@ -333,11 +363,14 @@
   <script>
     var tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     var telegramUsername = "@ተጫዋች";
+    var telegramUserId = "";
+
     if (tg) {
       try {
         tg.ready();
         tg.expand();
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+          telegramUserId = tg.initDataUnsafe.user.id ? String(tg.initDataUnsafe.user.id) : "";
           telegramUsername = tg.initDataUnsafe.user.username ? "@" + tg.initDataUnsafe.user.username : (tg.initDataUnsafe.user.first_name || "@ተጫዋች");
           var profEl = document.getElementById('prof-user');
           if (profEl) profEl.innerText = telegramUsername;
@@ -355,21 +388,41 @@
     var calledSet = new Set();
     var CYCLE = 50;
 
-    // 3ኛ ነጥብ፡ ዋናና መጫወቻ ሂሳብ ማመሳሰያ
+    // 1ኛ ነጥብ፡ ዋናና መጫወቻ ሂሳብ
     var mainBalance = 0.0;
     var playBalance = 10.0;
 
+    // 1ኛ ነጥብ፡ ሁለቱንም ዋሌቶች 100% ማመሳሰያ ፈንክሽን
     function syncWallets() {
-      // Top bar እና Navigation Wallet በአንድ ላይ እንዲቀየሩ
       document.getElementById('top-main-wallet').innerText = mainBalance.toFixed(2);
       document.getElementById('wallet-main-display').innerText = mainBalance.toFixed(2);
       document.getElementById('top-play-wallet').innerText = playBalance.toFixed(2);
       document.getElementById('wallet-play-display').innerText = playBalance.toFixed(2);
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
+    // 1ኛ & 2ኛ ነጥብ፡ ከሰርቨር ቀጥታ አዲሱን ቀሪ ሂሳብ መውሰጃ (Fetch Balance)
+    function fetchLiveWalletBalance() {
+      if (!telegramUserId) return;
+      fetch('/api/wallet?user_id=' + encodeURIComponent(telegramUserId))
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data && data.status === 'success') {
+            mainBalance = parseFloat(data.main_balance) || 0.0;
+            playBalance = parseFloat(data.play_balance) || 0.0;
+            syncWallets();
+          }
+        })
+        .catch(function(err) {
+          console.log("Wallet fetch error:", err);
+        });
+    }
+	document.addEventListener("DOMContentLoaded", function() {
       syncWallets();
+      fetchLiveWalletBalance();
       clearSelection();
+
+      // በየ 8 ሰከንዱ በራስ-ሰር አዲሱን ዋሌት ከሰርቨር እንዲያድስ
+      setInterval(fetchLiveWalletBalance, 8000);
 
       var btn10 = document.getElementById('play-btn-10');
       var btn20 = document.getElementById('play-btn-20');
@@ -398,6 +451,7 @@
 
       clearSelection();
       calcDerash();
+      fetchLiveWalletBalance();
     }
 
     function switchTab(viewId, btn) {
@@ -405,13 +459,18 @@
       document.querySelectorAll('.bottom-nav .nav-item').forEach(function(b) { b.classList.remove('active'); });
       if (btn) btn.classList.add('active');
 
+      if (viewId === 'wallet-view') {
+        fetchLiveWalletBalance();
+      }
+
       if (viewId === 'lobby-view' && isPlaying) {
         document.getElementById('game-view').classList.add('active');
       } else {
         document.getElementById(viewId).classList.add('active');
       }
     }
-	function calcDerash() {
+
+    function calcDerash() {
       var mult = (currentStake === 10) ? 8 : 16;
       var dEl = document.getElementById('top-derash');
       var pEl = document.getElementById('top-players');
@@ -419,6 +478,7 @@
       if (pEl) pEl.innerText = selectedCartelas.length;
     }
 
+    // 3ኛ ነጥብ፡ የ 1-600 ሳጥን መገንቢያ
     function initCartelaGrid() {
       var cBox = document.getElementById('cartela-container');
       if (!cBox) return;
@@ -461,24 +521,18 @@
       renderCards();
     }
 
-    // 4ኛ ነጥብ፡ ካርቴላዎችን፣ ዋሌትን እና ታሪክን ሙሉ በሙሉ የሚያድስ Refresh ፈንክሽን
+    // ሙሉ ገጹን የሚያድስ Refresh
     function executeFullRefresh() {
       if (isPlaying) return;
-      
-      // 1. ካርቴላዎችን Deselect ማድረግ
       clearSelection();
+      fetchLiveWalletBalance();
 
-      // 2. Wallet ማደስ
-      syncWallets();
-
-      // 3. History ማደስ
       var hContent = document.getElementById('history-content');
       if (hContent) {
-        hContent.innerHTML = '<p style="color: #38bdf8;">🔄 መረጃው ታድሷል (ታሪክ ዝግጁ ነው)</p>';
+        hContent.innerHTML = '<p style="color: #38bdf8;">🔄 መረጃው ታድሷል</p>';
       }
     }
-
-    function makeMatrix() {
+	function makeMatrix() {
       var col = function(min, max) {
         var s = [];
         while(s.length < 5) {
@@ -528,7 +582,8 @@
       h += '</div></div>';
       return h;
     }
-	function initMasterBoard() {
+
+    function initMasterBoard() {
       var ranges = { B:[1,15], I:[16,30], N:[31,45], G:[46,60], O:[61,75] };
       for (var k in ranges) {
         var colEl = document.getElementById('col-' + k);
@@ -592,8 +647,7 @@
       calledBalls = [];
       calledSet.clear();
       var deck = generateGlobalDeck(roundId);
-
-      gameInterval = setInterval(function() {
+	  gameInterval = setInterval(function() {
         if (deck.length === 0 || calledBalls.length >= 75) {
           endGameWithoutWinner();
           return;
@@ -641,7 +695,7 @@
 
         for (var r = 0; r < 5; r++) {
           if (grid[r].every(Boolean)) { isWon = true; pattern = "በረድፍ " + (r + 1); break; }
-		  }
+        }
         if (!isWon) {
           for (var c = 0; c < 5; c++) {
             if (grid.map(function(row) { return row[c]; }).every(Boolean)) { isWon = true; pattern = "በአምድ " + cols[c]; break; }
@@ -676,11 +730,9 @@
         prizePerWinner = totalDerash / winners.length;
       }
 
-      // ያሸነፈው ገንዘብ ወደ Main Wallet ገቢ ይደረጋል
       mainBalance += prizePerWinner;
       syncWallets();
 
-      // ወደ History መጨመር
       var hContent = document.getElementById('history-content');
       if (hContent) {
         var now = new Date().toLocaleTimeString();
@@ -702,7 +754,7 @@
           '<h2 style="color: #eab308; margin-bottom: 6px; font-size: 20px;">🎉 ቢንጎ! እንኳን ደስ አለህ!</h2>' +
           '<p style="font-size: 14px; margin-bottom: 4px; color: #fff;">አሸናፊ፡ <b style="color: #38bdf8;">' + winnerNames + '</b></p>' +
           '<p style="color: #94a3b8; font-size: 13px;">ያሸነፈበት ካርቴላ፡ <b style="color: #10b981;">' + winnerCardIds + '</b></p>' +
-          '<p style="color: #facc15; font-size: 13px; font-weight: bold; margin-top: 4px;">ሽልማት፡ ' + prizePerWinner.toFixed(2) + ' ብር ገቢ ተደርጓል!</p>' +
+		  '<p style="color: #facc15; font-size: 13px; font-weight: bold; margin-top: 4px;">ሽልማት፡ ' + prizePerWinner.toFixed(2) + ' ብር ገቢ ተደርጓል!</p>' +
           '<div style="max-height: 240px; overflow-y: auto; margin-top: 8px;">' +
             winningCardsHTML +
           '</div>' +
@@ -745,12 +797,14 @@
 
       document.getElementById('game-view').classList.remove('active');
       document.getElementById('lobby-view').classList.add('active');
-	  document.getElementById('in-game-cards').innerHTML = '';
+
+      document.getElementById('in-game-cards').innerHTML = '';
       document.querySelectorAll('.num-pill').forEach(function(p) { p.className = 'num-pill'; });
       document.getElementById('current-call').innerText = '--';
       document.getElementById('top-called').innerText = '0';
 
       clearSelection();
+      fetchLiveWalletBalance();
     }
   </script>
 </body>
